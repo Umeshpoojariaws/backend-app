@@ -1,20 +1,15 @@
-name: Build and Push Backend Image
+name: Build and Push Backend Image to Artifact Registry
 
 on:
   push:
     branches:
       - main
 
-env:
-  DOCKER_REPO_URL: us-central1-docker.pkg.dev/devops-mlops-483223/ml-repo/
-
 jobs:
   call-reusable-workflow:
-    # IMPORTANT: Replace 'your-github-username' with your actual username
     uses: Umeshpoojariaws/shared-workflows/.github/workflows/reusable-build-push.yml@main
     with:
       image-name: backend
-      docker-repo-url: ${{ env.DOCKER_REPO_URL }}
+      artifact-registry-repo: ${{ vars.ARTIFACT_REGISTRY_REPO }}
     secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
