@@ -1,0 +1,20 @@
+name: Build and Push Backend Image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  DOCKER_REPO_URL: us-central1-docker.pkg.dev/devops-mlops-483223/ml-repo/
+
+jobs:
+  call-reusable-workflow:
+    # IMPORTANT: Replace 'your-github-username' with your actual username
+    uses: Umeshpoojariaws/shared-workflows/.github/workflows/reusable-build-push.yml@main
+    with:
+      image-name: backend
+      docker-repo-url: ${{ env.DOCKER_REPO_URL }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
