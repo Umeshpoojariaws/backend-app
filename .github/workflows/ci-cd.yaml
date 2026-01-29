@@ -1,4 +1,4 @@
-name: Build and Push Backend Image to Artifact Registry
+name: Build, Push, and Deploy Backend
 
 on:
   push:
@@ -11,5 +11,9 @@ jobs:
     with:
       image-name: backend
       artifact-registry-repo: ${{ vars.ARTIFACT_REGISTRY_REPO }}
+      gitops-repo: Umeshpoojariaws/gke-gitops-infra
+      # This simply tells the workflow which environment to update.
+      environment: dev
     secrets:
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+      GITOPS_PAT: ${{ secrets.GITOPS_PAT }}
