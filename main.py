@@ -18,7 +18,7 @@ model = None
 @app.on_event("startup")
 def load_model():
     global model
-    model_name = "weather-forecaster"
+    model_name = "Weather Forecast"
     
     try:
         client = MlflowClient()
