@@ -1,5 +1,5 @@
 import mlflow
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, HTTPException
 from pydantic import BaseModel
 import pandas as pd
 import os
@@ -52,7 +52,7 @@ def health_check(response: Response):
 @app.post("/predict")
 def predict(payload: PredictionPayload):
     if model is None:
-        return {"error": "Model is not loaded yet"}, 503
+        raise HTTPException(status_code=503, detail="Model is not loaded yet. Please promote a model to the 'Production' stage in MLflow.")
     data = pd.DataFrame([payload.dict()])
     prediction = model.predict(data)
     return {"prediction": prediction.tolist()}
