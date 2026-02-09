@@ -21,12 +21,18 @@ def load_model():
     model_name = "weather-forecaster"
     
     try:
-        client = MlflowClient()
-        latest_version = client.get_latest_versions(model_name, stages=["None"])[0].version
+        # Get the latest model version from the "Production" stage
+        production_versions = client.get_latest_versions(model_name, stages=["Production"])
+        if not production_versions:
+            logger.warning(f"No models found in 'Production' stage for '{model_name}'. Model will not be loaded.")
+            model = None
+            return
+            
+        latest_version = production_versions[0].version
         
         # Load the model after the server starts
         model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{latest_version}")
-        logger.info(f"Successfully loaded model '{model_name}' version '{latest_version}'.")
+        logger.info(f"Successfully loaded model '{model_name}' version '{latest_version}' from 'Production' stage.")
     except Exception as e:
         logger.error(f"Failed to load model '{model_name}'. Error: {e}")
         model = None
