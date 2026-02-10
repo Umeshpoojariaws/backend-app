@@ -21,20 +21,13 @@ def load_model():
     model_name = "weather-forecaster"
     
     try:
-        # Get the latest model version from the "Production" stage
-        production_versions = client.get_latest_versions(model_name, stages=["Production"])
-        if not production_versions:
-            logger.warning(f"No models found in 'Production' stage for '{model_name}'. Model will not be loaded.")
-            model = None
-            return
-            
-        latest_version = production_versions[0].version
-        
-        # Load the model after the server starts
-        model = mlflow.pyfunc.load_model(model_uri=f"models:/{model_name}/{latest_version}")
-        logger.info(f"Successfully loaded model '{model_name}' version '{latest_version}' from 'Production' stage.")
+        # Load the model using the 'production' alias
+        model_uri = f"models:/{model_name}@production"
+        logger.info(f"Attempting to load model from URI: {model_uri}")
+        model = mlflow.pyfunc.load_model(model_uri=model_uri)
+        logger.info(f"Successfully loaded model '{model_name}' with alias 'production'.")
     except Exception as e:
-        logger.error(f"Failed to load model '{model_name}'. Error: {e}")
+        logger.error(f"Failed to load model '{model_name}' with alias 'production'. Error: {e}")
         model = None
 
 class PredictionPayload(BaseModel):
