@@ -19,15 +19,19 @@ model = None
 def load_model():
     global model
     model_name = "weather-forecaster"
+    alias = "production"
     
     try:
-        # Load the model using the 'production' alias
-        model_uri = f"models:/{model_name}@production"
+        model_uri = f"models:/{model_name}@{alias}"
         logger.info(f"Attempting to load model from URI: {model_uri}")
         model = mlflow.pyfunc.load_model(model_uri=model_uri)
-        logger.info(f"Successfully loaded model '{model_name}' with alias 'production'.")
+        logger.info(f"Successfully loaded model '{model_name}' with alias '{alias}'.")
     except Exception as e:
-        logger.error(f"Failed to load model '{model_name}' with alias 'production'. Error: {e}")
+        logger.warning(
+            f"Could not load model with alias '{alias}'. "
+            f"The application will start without a model. "
+            f"Please promote a model to the '{alias}' alias in MLflow. Error: {e}"
+        )
         model = None
 
 class PredictionPayload(BaseModel):
