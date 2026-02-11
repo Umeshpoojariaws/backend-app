@@ -52,4 +52,12 @@ def predict(payload: PredictionPayload):
         raise HTTPException(status_code=503, detail="Model is not loaded yet. Please promote a model to the 'Production' stage in MLflow.")
     data = pd.DataFrame([payload.dict()])
     prediction = model.predict(data)
+
+    # --- NEW: Log the prediction and features ---
+    log_entry = {
+        "inputs": payload.dict(),
+        "prediction": prediction.tolist()[0]
+    }
+    logger.info(f"PREDICTION_LOG: {log_entry}")
+
     return {"prediction": prediction.tolist()}
